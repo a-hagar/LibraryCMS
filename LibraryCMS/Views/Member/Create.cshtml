@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+<a href="/Member/List">Go back</a>
+
+<h2>Create Member</h2>
+<form action="/Member/Create" method="POST">
+    <div>
+        <label>First Name</label><input type="text" name="FirstName" />
+    </div>
+    <div>
+        <label>Last Name</label><input type="text" name="LastName" />
+    </div>
+    <div>
+        <label>Email</label><input type="email" name="eMail" />
+    </div>
+    <div>
+        <label>Registration Date</label><input type="date" name="RegistrationDate" />
+    </div>
+    <div>
+        <label>Phone Number</label><input type="tel" name="PhoneNum" />
+    </div>
+    <div>
+        <label>Preferred Location</label><input type="number" name="LocationId" />
+    </div>
+    <div>
+        <input type="submit" name="Add Member" />
+    </div>
+</form>

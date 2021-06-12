@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+<a href="/Book/List">Go back</a>
+
+<h2>Add New Book</h2>
+<form action="/Book/Create" method="POST">
+    <div>
+        <label>Book</label><input type="text" name="BookTitle" />
+    </div>
+    <div>
+        <label>Author's First Name</label><input type="text" name="AuthorFname" />
+    </div>
+    <div>
+        <label>Author's Last Name</label><input type="text" name="AuthorLname" />
+    </div>
+    <div>
+        <label>Genre</label><input type="text" name="genre" />
+    </div>
+    <div>
+        <label>Publication Date</label><input type="date" name="PublicationDate" />
+    </div>
+    <div>
+        <label>Publisher</label><input type="text" name="Publisher" />
+    </div>
+    <div>
+        <label>ISBN</label><input type="text" name="ISBN" />
+    </div>
+    <div>
+        <input type="submit" name="Add Location" />
+    </div>
+</form>

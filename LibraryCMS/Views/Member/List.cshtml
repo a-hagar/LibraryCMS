@@ -1,0 +1,12 @@
+﻿@model IEnumerable<LibraryCMS.Models.MemberDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<a href="/Member/Create">Add new member</a>
+<h2>List</h2>
+@foreach(var member in Model)
+{
+    <h2><a href="/Member/Details/@member.MemberId">@member.FirstName @member.LastName</a></h2>
+
+}

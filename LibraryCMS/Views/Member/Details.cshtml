@@ -1,0 +1,20 @@
+﻿@model LibraryCMS.Models.MemberDto
+@{
+    ViewBag.Title = "Details";
+}
+<a href="/Member/List">Go back</a>
+
+<h2>@Model.FirstName @Model.LastName</h2>
+<div>Member since: @Model.RegistrationDate.ToString("dddd, MMMM dd,  yyyy")</div>
+
+<br />
+
+<div>
+    <p>Contact Info</p>
+    <p>Email: @Model.eMail</p>
+    <p>Phone number: @Model.PhoneNum</p>
+</div>
+
+
+
+

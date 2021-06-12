@@ -1,0 +1,16 @@
+﻿@model LibraryCMS.Models.BookDto
+@{
+    ViewBag.Title = "Details";
+}
+<a href="/Book/List">Go back</a>
+
+<h2>@Model.BookTitle</h2>
+<div>By: @Model.AuthorFname @Model.AuthorLname</div>
+<div>Genre: @Model.genre</div>
+<div>Publisher: @Model.Publisher</div>
+<div>Publication Date: @Model.PublicationDate</div>
+<div>ISBN: @Model.ISBN</div>
+
+
+
+

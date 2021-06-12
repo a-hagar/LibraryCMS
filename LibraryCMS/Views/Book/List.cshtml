@@ -1,0 +1,12 @@
+﻿@model IEnumerable<LibraryCMS.Models.BookDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<a href="/Book/Create">Add new Book</a>
+<h2>List</h2>
+@foreach(var book in Model)
+{
+    <h2><a href="/Book/Details/@book.BookId">@book.BookTitle</a></h2>
+
+}

@@ -1,0 +1,10 @@
+﻿{
+  "MemberId": 2,
+  "FirstName": "Alex",
+  "LastName": "Brown",
+  "PhoneNum": "647-210-4444",
+  "eMail": "brown@mail.com",
+  "RegistrationDate": "2021-05-17",
+  "LocationId": 1
+
+}

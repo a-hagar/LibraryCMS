@@ -1,0 +1,12 @@
+﻿@model IEnumerable<LibraryCMS.Models.LocationDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<a href="/Location/Create">Add new Location</a>
+<h2>List</h2>
+@foreach(var location in Model)
+{
+    <h2><a href="/Location/Details/@location.LocationId">@location.LocationName</a></h2>
+
+}
