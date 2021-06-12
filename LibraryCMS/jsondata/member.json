@@ -1,10 +1,10 @@
 ﻿{
-  "MemberId": 2,
-  "FirstName": "Alex",
-  "LastName": "Brown",
-  "PhoneNum": "647-210-4444",
-  "eMail": "brown@mail.com",
-  "RegistrationDate": "2021-05-17",
+  "MemberId": 3,
+  "FirstName": "Sam",
+  "LastName": "Redd",
+  "PhoneNum": "647-284-6910",
+  "eMail": "redd@mail.com",
+  "RegistrationDate": "2021-05-05",
   "LocationId": 1
 
 }

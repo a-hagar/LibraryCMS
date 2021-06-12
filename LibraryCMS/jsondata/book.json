@@ -1,11 +1,11 @@
 ﻿{
-  "BookId": 6,
-  "BookTitle": "",
-  "AuthorFname": "",
-  "AuthorLname": "",
-  "genre": "",
-  "ISBN": "",
-  "Publisher": "",
-  "PublicationDate": ""
+  "BookId": 5,
+  "BookTitle": "Brave New World",
+  "AuthorFname": "Aldous",
+  "AuthorLname": "Huxley",
+  "genre": "Science Fiction",
+  "ISBN": "9780307356543",
+  "Publisher": "Random House of Canada",
+  "PublicationDate": "2007-08-28"
 
 }
