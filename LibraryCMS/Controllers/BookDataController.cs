@@ -38,6 +38,34 @@ namespace LibraryCMS.Controllers
             return BookDtos;
         }
 
+
+        // GET: api/BookData/ListBooksForLocations/1
+        [HttpGet]
+        [ResponseType(typeof(BookDto))]
+        public IHttpActionResult ListBooksForLocations(int id)
+        {
+            //locations that have books that match the selected id
+            List<Book> Books = db.Books.Where(
+                b => b.Location.Any(
+                l => l.LocationId == id)
+            ).ToList();
+            List<BookDto> BookDtos = new List<BookDto>();
+
+            Books.ForEach(b => BookDtos.Add(new BookDto()
+            {
+                BookId = b.BookId,
+                BookTitle = b.BookTitle,
+                AuthorFname = b.AuthorFname,
+                AuthorLname = b.AuthorLname,
+                genre = b.genre,
+                ISBN = b.ISBN,
+                Publisher = b.Publisher,
+                PublicationDate = b.PublicationDate
+            }));
+
+            return Ok(BookDtos);
+        }
+
         // GET: api/BookData/FindBook/5
         [ResponseType(typeof(Book))]
         [HttpGet]
@@ -100,6 +128,40 @@ namespace LibraryCMS.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+
+        /*
+        [HttpPost]
+        //public IHttpActionResult UpdateBookPic(int id)
+        {
+            
+            bool haspic = false;
+            string picextension;
+            if (Request.Content.IsMimeMultipartContent())
+            {
+                debug.WriteLine("Testing file upload...");
+                int numfiles = HttpContext.Current.Request.Files.Count;
+                Debug.WriteLine("Files Received: " + numfiles);
+
+            if(numfiles == 1 && HttpContext.Current.Request.Files[0] != null)
+                {
+                    var bookPic = HttpContext.Current.Request.Files[0];
+                    if (animalPic.ContentLength > 0)
+                    {
+                        var valtypes = new[] {"jpeg", "jpg", "png", "gif"};  
+                        var extension = Path.GetExtension(bookPic.FileName).Substring(1);
+                    }
+                }
+
+
+            }
+
+                
+
+             
+
+           return id;
+        }
+        */
 
         // POST: api/BookData/AddBook
         [ResponseType(typeof(Book))]

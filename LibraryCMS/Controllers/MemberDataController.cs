@@ -19,7 +19,8 @@ namespace LibraryCMS.Controllers
 
         // GET: api/MemberData/ListMembers
         [HttpGet]
-        public IEnumerable<MemberDto> ListMembers()
+        [ResponseType(typeof(MemberDto))]
+        public IHttpActionResult ListMembers()
         {
             List<Member> Members = db.Members.ToList();
             List<MemberDto> MemberDtos = new List<MemberDto>();
@@ -31,13 +32,40 @@ namespace LibraryCMS.Controllers
                 PhoneNum = m.PhoneNum,
                 eMail = m.eMail,
                 RegistrationDate = m.RegistrationDate,
+                LocationId = m.Locations.LocationId,
+                LocationName = m.Locations.LocationName
             }));
 
-            return MemberDtos;
+            return Ok(MemberDtos);
         }
 
+        // GET: api/MemberData/ListMembersForLocation/1
+        [HttpGet]
+        [ResponseType(typeof(MemberDto))]
+        public IHttpActionResult ListMembersForLocation(int id)
+        {
+            List<Member> Members = db.Members.Where(m=>m.LocationId==id).ToList();
+            List<MemberDto> MemberDtos = new List<MemberDto>();
+
+            Members.ForEach(m => MemberDtos.Add(new MemberDto()
+            {
+                MemberId = m.MemberId,
+                FirstName = m.FirstName,
+                LastName = m.LastName,
+                PhoneNum = m.PhoneNum,
+                eMail = m.eMail,
+                RegistrationDate = m.RegistrationDate,
+                LocationId = m.Locations.LocationId,
+                LocationName = m.Locations.LocationName
+            })) ; 
+
+            return Ok(MemberDtos);
+        }
+
+
+
         // GET: api/MemberData/FindMember/5
-        [ResponseType(typeof(Member))]
+        [ResponseType(typeof(MemberDto))]
         [HttpGet]
         public IHttpActionResult FindMember(int id)
         {
@@ -50,6 +78,8 @@ namespace LibraryCMS.Controllers
                 PhoneNum = member.PhoneNum,
                 eMail = member.eMail,
                 RegistrationDate = member.RegistrationDate,
+                LocationId = member.Locations.LocationId,
+                LocationName = member.Locations.LocationName
             };
             if (member == null)
             {

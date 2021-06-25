@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Net.Http;
 using System.Diagnostics;
 using LibraryCMS.Models;
+using LibraryCMS.Models.ViewModels;
 using System.Web.Script.Serialization;
 
 
@@ -19,7 +20,7 @@ namespace LibraryCMS.Controllers
         static BookController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44329/api/bookdata/");
+            client.BaseAddress = new Uri("https://localhost:44329/api/");
         }
 
         // GET: Book/List
@@ -28,7 +29,7 @@ namespace LibraryCMS.Controllers
             //retrieve list of members from member api
             //curl https://localhost:44329/api/bookdata/listbooks
 
-            string url = "listbooks";
+            string url = "bookdata/listbooks";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
@@ -47,15 +48,25 @@ namespace LibraryCMS.Controllers
         // GET: Book/Details/5
         public ActionResult Details(int id)
         {
-            string url = "findbook/" + id;
+            DetailsBook ViewModel = new DetailsBook();
+
+            string url = "bookdata/findbook/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
 
-            BookDto selectedbook = response.Content.ReadAsAsync<BookDto>().Result;
-            Debug.WriteLine("The book selected is " + selectedbook.BookTitle);
+            BookDto SelectedBook = response.Content.ReadAsAsync<BookDto>().Result;
+            Debug.WriteLine("The book selected is " + SelectedBook.BookTitle);
 
-            return View(selectedbook);
+            ViewModel.SelectedBook = SelectedBook;
+
+            //list of locations that have the selected book
+            url = "locationdata/listlocationsforbooks/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<LocationDto> CurrentLocation = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+            ViewModel.CurrentLocation = CurrentLocation;
+
+            return View(ViewModel);
         }
 
         // GET: Book/Create
@@ -69,7 +80,7 @@ namespace LibraryCMS.Controllers
         public ActionResult Create(Book book)
         {
             Debug.WriteLine("the new book is: " + book.BookTitle);
-            string url = "addbook";
+            string url = "bookdata/addbook";
 
             string jsonpayload = jss.Serialize(book);
 

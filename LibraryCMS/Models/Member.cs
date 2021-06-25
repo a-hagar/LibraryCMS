@@ -18,7 +18,7 @@ namespace LibraryCMS.Models
         public string eMail { get; set; }
         public DateTime RegistrationDate { get; set; }
 
-        //a user belongs to a single location
+        //a user belongs to a single location, but a location has many members
         [ForeignKey("Locations")]
         public int LocationId { get; set; }
         public virtual Location Locations { get; set; }
@@ -32,6 +32,8 @@ namespace LibraryCMS.Models
         public string PhoneNum { get; set; }
         public string eMail { get; set; }
         public DateTime RegistrationDate { get; set; }
+        public int LocationId { get; set; }
+        public string LocationName { get; set; }
     }
 
 }

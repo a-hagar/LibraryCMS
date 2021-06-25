@@ -220,6 +220,10 @@
     <Compile Include="Migrations\202106101826343_members.Designer.cs">
       <DependentUpon>202106101826343_members.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106242040144_updated.cs" />
+    <Compile Include="Migrations\202106242040144_updated.Designer.cs">
+      <DependentUpon>202106242040144_updated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Book.cs" />
@@ -227,6 +231,8 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\ViewModels\DetailsBook.cs" />
+    <Compile Include="Models\ViewModels\UpdateMember.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -244,6 +250,7 @@
     <Content Include="jsondata\member.json" />
     <Content Include="jsondata\location.json" />
     <Content Include="jsondata\book.json" />
+    <Compile Include="Models\ViewModels\DetailsLocation.cs" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -291,16 +298,22 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Member\List.cshtml" />
     <Content Include="Views\Member\Details.cshtml" />
-    <Content Include="Views\Member\Create.cshtml" />
+    <Content Include="Views\Member\New.cshtml" />
     <Content Include="Views\Member\Error.cshtml" />
     <Content Include="Views\Book\Error.cshtml" />
     <Content Include="Views\Location\Error.cshtml" />
-    <Content Include="Views\Location\Create.cshtml" />
+    <Content Include="Views\Location\New.cshtml" />
     <Content Include="Views\Location\Details.cshtml" />
     <Content Include="Views\Location\List.cshtml" />
-    <Content Include="Views\Book\Create.cshtml" />
+    <Content Include="Views\Book\New.cshtml" />
     <Content Include="Views\Book\Details.cshtml" />
     <Content Include="Views\Book\List.cshtml" />
+    <Content Include="Views\Member\Edit.cshtml" />
+    <Content Include="Views\Member\DeleteConfirm.cshtml" />
+    <Content Include="Views\Location\Edit.cshtml" />
+    <Content Include="Views\Book\Edit.cshtml" />
+    <Content Include="Views\Location\DeleteConfirm.cshtml" />
+    <Content Include="Views\Book\DeleteConfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -339,6 +352,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106101826343_members.resx">
       <DependentUpon>202106101826343_members.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106242040144_updated.resx">
+      <DependentUpon>202106242040144_updated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

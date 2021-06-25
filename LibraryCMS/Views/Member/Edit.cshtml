@@ -1,0 +1,41 @@
+﻿@model LibraryCMS.Models.ViewModels.UpdateMember
+@{
+    ViewBag.Title = "Update";
+}
+
+<h2>Update Member</h2>
+<form action="/Member/Update/@Model.SelectedMember.MemberId" method="POST">
+    <div style="display:none;">
+        @* Passing through member id *@
+        <input type="text" name="MemberId" value="@Model.SelectedMember.MemberId" />
+    </div>
+    <div>
+        <label>First Name</label><input type="text" name="FirstName" value="@Model.SelectedMember.FirstName" />
+    </div>
+    <div>
+        <label>Last Name</label><input type="text" name="LastName" value="@Model.SelectedMember.LastName" />
+    </div>
+    <div>
+        <label>Email</label><input type="email" name="eMail" value="@Model.SelectedMember.eMail" />
+    </div>
+    <div>
+        <label>Registration Date</label><input type="date" name="RegistrationDate" value="@Model.SelectedMember.RegistrationDate" />
+    </div>
+    <div>
+        <label>Phone Number</label><input type="tel" name="PhoneNum" value="@Model.SelectedMember.PhoneNum" />
+    </div>
+    <div>
+        <label>Preferred Location</label>
+        <select name="LocationId">
+            @foreach (var locations in Model.LocationsOptions)
+            {
+                <option value="@locations.LocationId">@locations.LocationName</option>
+            }
+        </select>
+    </div>
+    <div>
+        <input type="submit" name="Update Member" />
+    </div>
+</form>
+
+

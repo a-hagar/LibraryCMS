@@ -2,11 +2,16 @@
 @{
     ViewBag.Title = "Details";
 }
-<a href="/Member/List">Go back</a>
+<div>
+    <a href="/Member/List">Go back</a>
+    <a href="/Member/Edit/@Model.MemberId">Update</a>
+    <a href="/Member/Delete/@Model.MemberId">Delete</a>
+</div>
+
 
 <h2>@Model.FirstName @Model.LastName</h2>
 <div>Member since: @Model.RegistrationDate.ToString("dddd, MMMM dd,  yyyy")</div>
-
+<div>Preferred Location: <a href="/Location/Details/@Model.LocationId"> @Model.LocationName</a></div>
 <br />
 
 <div>

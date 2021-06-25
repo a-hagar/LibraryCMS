@@ -1,13 +1,31 @@
-﻿@model LibraryCMS.Models.LocationDto
+﻿@model LibraryCMS.Models.ViewModels.DetailsLocation
 @{
     ViewBag.Title = "Details";
 }
-<a href="/Location/List">Go back</a>
+<div>
+    <a href="/Location/List">Go back</a>
+    <a href="/Location/Edit/@Model.SelectedLocation.LocationId">Update Location</a>
+    <a href="/Location/Delete/@Model.SelectedLocation.LocationId">Delete Location</a>
+</div>
 
-<h2>@Model.LocationName</h2>
-<div>@Model.Address</div>
-<div>@Model.PostalCode</div>
 
+<h2>@Model.SelectedLocation.LocationName</h2>
+<div>Address: @Model.SelectedLocation.Address @Model.SelectedLocation.PostalCode</div>
 
+<div>
+    <h4>Members from this library</h4>
+    @foreach(var member in Model.RelatedMembers)
+    {
+        <div><a href="/Member/Details/@member.MemberId">@member.FirstName @member.LastName</a></div>
+    }
+</div>
+
+<div>
+    <h4>Books available at this location</h4>
+    @foreach (var book in Model.BookSelection)
+    {
+        <div><a href="/Book/Details/@book.BookId">@book.BookTitle</a></div>
+    }
+</div>
 
 

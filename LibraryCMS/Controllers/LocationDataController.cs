@@ -19,7 +19,8 @@ namespace LibraryCMS.Controllers
 
         // GET: api/LocationsData/GetLocation
         [HttpGet]
-        public IEnumerable<LocationDto> ListLocations()
+        [ResponseType(typeof(LocationDto))]
+        public IHttpActionResult ListLocations()
         {
             List<Location> Locations = db.Locations.ToList();
             List<LocationDto> LocationDtos = new List<LocationDto>();
@@ -31,12 +32,36 @@ namespace LibraryCMS.Controllers
                 PostalCode = l.PostalCode,
             }));
 
-            return LocationDtos;
+            return Ok(LocationDtos);
+        }
+
+        // GET: api/LocationData/ListLocationsForBooks/1
+        [HttpGet]
+        [ResponseType(typeof(LocationDto))]
+        public IHttpActionResult ListLocationsForBooks(int id)
+        {
+            //books that are in the same location with selected id
+            List<Location> Locations = db.Locations.Where(
+                l=>l.Book.Any(
+                b=>b.BookId==id)
+            ).ToList();
+            List<LocationDto> LocationDtos = new List<LocationDto>();
+
+            Locations.ForEach(l => LocationDtos.Add(new LocationDto()
+            {
+                LocationId = l.LocationId,
+                LocationName = l.LocationName,
+                Address = l.Address,
+                PostalCode = l.PostalCode
+            }));
+
+            return Ok(LocationDtos);
         }
 
         // GET: api/LocationsData/FindLocation/5
-        [ResponseType(typeof(Location))]
+
         [HttpGet]
+         [ResponseType(typeof(LocationDto))]
         public IHttpActionResult FindLocation(int id)
         {
             Location location = db.Locations.Find(id);
@@ -54,6 +79,8 @@ namespace LibraryCMS.Controllers
 
             return Ok(LocationDto);
         }
+
+
 
         // PUT: api/LocationsData/UpdateLocation/5
         [ResponseType(typeof(void))]

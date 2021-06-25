@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<LibraryCMS.Models.LocationDto>
 @{
     ViewBag.Title = "Create";
 }
@@ -22,7 +22,13 @@
         <label>Phone Number</label><input type="tel" name="PhoneNum" />
     </div>
     <div>
-        <label>Preferred Location</label><input type="number" name="LocationId" />
+        <label>Preferred Location</label>
+        <select name="LocationId">
+            @foreach (var locations in Model)
+            {
+                <option value="@locations.LocationId">@locations.LocationName</option>
+            }
+        </select>
     </div>
     <div>
         <input type="submit" name="Add Member" />

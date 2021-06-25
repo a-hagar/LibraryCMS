@@ -17,7 +17,8 @@ namespace LibraryCMS.Models
         public string PostalCode{ get; set; }
 
         //a location can have many books
-        public ICollection<Book> Books { get; set; }
+        public ICollection<Book> Book { get; set; }
+
     }
 
     public class LocationDto

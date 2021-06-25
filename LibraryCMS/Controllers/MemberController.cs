@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Diagnostics;
 using LibraryCMS.Models;
 using System.Web.Script.Serialization;
+using LibraryCMS.Models.ViewModels;
 
 namespace LibraryCMS.Controllers
 {
@@ -18,7 +19,7 @@ namespace LibraryCMS.Controllers
         static MemberController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44329/api/memberdata/");
+            client.BaseAddress = new Uri("https://localhost:44329/api/");
         }
 
         // GET: Member/List
@@ -27,7 +28,7 @@ namespace LibraryCMS.Controllers
             //retrieve list of members from member api
             //curl https://localhost:44329/api/memberdata/listmembers
 
-            string url = "listmembers";
+            string url = "memberdata/listmembers";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
@@ -45,7 +46,7 @@ namespace LibraryCMS.Controllers
             //retrieve data from selected member 
             //curl https://localhost:44329/api/memberdata/findmember/{id}
 
-            string url = "findmember/" + id;
+            string url = "memberdata/findmember/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
@@ -63,9 +64,15 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Create
-        public ActionResult Create()
+        public ActionResult New()
         {
-            return View();
+            //get info from locations api to list all locations
+
+            string url = "locationdata/listlocations";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            IEnumerable<LocationDto> LocationsOptions = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+
+            return View(LocationsOptions);
         }
 
         // POST: Member/Create
@@ -73,7 +80,7 @@ namespace LibraryCMS.Controllers
         public ActionResult Create(Member member)
         {
             Debug.WriteLine("the new member is: " + member.FirstName + " " + member.LastName);
-            string url = "addmember";
+            string url = "memberdata/addmember";
 
             string jsonpayload = jss.Serialize(member);
 
@@ -98,44 +105,76 @@ namespace LibraryCMS.Controllers
         // GET: Member/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            UpdateMember ViewModel = new UpdateMember();
+            //existing member info
+            string url = "memberdata/findmember/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            MemberDto Selectedmember = response.Content.ReadAsAsync<MemberDto>().Result;
+            ViewModel.SelectedMember = Selectedmember;
+
+            //get location info when updating member
+            url = "locationdata/listlocations/";
+            response = client.GetAsync(url).Result;
+            IEnumerable<LocationDto> LocationsOptions = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+            ViewModel.LocationsOptions = LocationsOptions;
+
+            return View(ViewModel);
         }
 
-        // POST: Member/Edit/5
+        // POST: Member/Update/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Update(int id, Member member)
         {
-            try
-            {
-                // TODO: Add update logic here
+            string url = "memberdata/updatemember/" + id;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string jsonpayload = jss.Serialize(member);
+            Debug.WriteLine(jsonpayload);
+
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
             }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
         }
 
         // GET: Member/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "memberdata/findmember" + id ;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            MemberDto selectedmember = response.Content.ReadAsAsync<MemberDto>().Result;
+            return View(selectedmember);
         }
 
         // POST: Member/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            string url = "memberdata/deletemember/" + id;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
     }

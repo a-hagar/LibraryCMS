@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Net.Http;
 using System.Diagnostics;
 using LibraryCMS.Models;
+using LibraryCMS.Models.ViewModels;
 using System.Web.Script.Serialization;
 
 namespace LibraryCMS.Controllers
@@ -18,7 +19,7 @@ namespace LibraryCMS.Controllers
         static LocationController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44329/api/locationdata/");
+            client.BaseAddress = new Uri("https://localhost:44329/api/");
         }
 
         // GET: Location/List
@@ -27,7 +28,7 @@ namespace LibraryCMS.Controllers
             //retrieve list of members from member api
             //curl https://localhost:44329/api/locationdata/listlocations
 
-            string url = "listlocations";
+            string url = "locationdata/listlocations";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
@@ -46,23 +47,38 @@ namespace LibraryCMS.Controllers
         // GET: Location/Details/5
         public ActionResult Details(int id)
         {
+            DetailsLocation ViewModel = new DetailsLocation();
 
             //retrieve data from selected member 
             //curl https://localhost:44329/api/memberdata/findmember/{id}
 
-            string url = "findlocation/" + id;
+            string url = "locationdata/findlocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
 
-            LocationDto selectedlocation = response.Content.ReadAsAsync<LocationDto>().Result;
-            Debug.WriteLine("The location selected is " + selectedlocation.LocationName);
+            LocationDto SelectedLocation = response.Content.ReadAsAsync<LocationDto>().Result;
+            Debug.WriteLine("The location selected is " + SelectedLocation.LocationName);
+            ViewModel.SelectedLocation = SelectedLocation;
 
-            return View();
+            //shows all members with the location chosen as their preference
+            url = "memberdata/listmembersforlocation/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<MemberDto> RelatedMembers = response.Content.ReadAsAsync<IEnumerable<MemberDto>>().Result;
+
+            ViewModel.RelatedMembers = RelatedMembers;
+
+            //list of all books at the selected location
+            url = "bookdata/listbooksforlocations/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<BookDto> BookSelection = response.Content.ReadAsAsync<IEnumerable<BookDto>>().Result;
+            ViewModel.BookSelection = BookSelection;
+
+            return View(ViewModel);
         }
 
         // GET: Location/Create
-        public ActionResult Create()
+        public ActionResult New()
         {
             return View();
         }
@@ -72,7 +88,7 @@ namespace LibraryCMS.Controllers
         public ActionResult Create(Location location)
         {
             Debug.WriteLine("the new location is: " + location.LocationName);
-            string url = "addlocation";
+            string url = "locationdata/addlocation";
 
             string jsonpayload = jss.Serialize(location);
 
@@ -102,39 +118,57 @@ namespace LibraryCMS.Controllers
 
         // POST: Location/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Location location)
         {
-            try
-            {
-                // TODO: Add update logic here
+            string url = "locationdata/updatelocation/" + id;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string jsonpayload = jss.Serialize(location);
+            Debug.WriteLine(jsonpayload);
+
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
 
         // GET: Location/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "locationdata/deletelocation/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            LocationDto selectedlocation = response.Content.ReadAsAsync<LocationDto>().Result;
+            return View(selectedlocation);
         }
 
         // POST: Location/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            string url = "locationdata/deletelocation/" + id;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
     }

@@ -20,8 +20,13 @@ namespace LibraryCMS.Models
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
 
+        //data for keeping track of image uploads
+        //images deposited into /Content/Images/Books/default.png
+        public bool BookHasPic { get; set; }
+        public string PicExtension { get; set; }
+
         //a book can be in multiple locations
-        public ICollection<Location> Locations { get; set; }
+        public ICollection<Location> Location { get; set; }
     }
 
     public class BookDto
