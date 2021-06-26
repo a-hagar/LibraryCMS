@@ -11,5 +11,7 @@ namespace LibraryCMS.Models.ViewModels
         public BookDto SelectedBook { get; set; }
 
         public IEnumerable<LocationDto> CurrentLocation { get; set; }
+
+        public IEnumerable<LocationDto> OtherLocation { get; set; }
     }
 }

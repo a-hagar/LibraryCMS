@@ -18,8 +18,30 @@ namespace LibraryCMS.Controllers
 
         static LocationController()
         {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                UseCookies = false
+            }; 
+
             client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:44329/api/");
+        }
+
+        private void GetApplicationCookie()
+        {
+            string token = "";
+            client.DefaultRequestHeaders.Remove("Cookie");
+            if (!User.Identity.IsAuthenticated) return;
+
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies.Get(".AspNet.ApplicationCookie");
+            if (cookie != null) token = cookie.Value;
+
+
+            if (token != "") client.DefaultRequestHeaders.Add("Cookie", ".AspNet.ApplicationCookie=" + token);
+            Debug.WriteLine("Token Submitted is : " + token);
+
+            return;
         }
 
         // GET: Location/List
@@ -78,6 +100,7 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Location/Create
+        [Authorize]
         public ActionResult New()
         {
             return View();
@@ -85,8 +108,11 @@ namespace LibraryCMS.Controllers
 
         // POST: Location/Create
         [HttpPost]
+        [Authorize]
         public ActionResult Create(Location location)
         {
+            GetApplicationCookie();
+
             Debug.WriteLine("the new location is: " + location.LocationName);
             string url = "locationdata/addlocation";
 
@@ -111,15 +137,26 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Location/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
-            return View();
+            string url = "locationdata/findlocation/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+
+            Debug.WriteLine("The response code is " + response.StatusCode);
+
+            LocationDto selectedlocation = response.Content.ReadAsAsync<LocationDto>().Result;
+
+            return View(selectedlocation);
         }
 
         // POST: Location/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, Location location)
+        [Authorize]
+        public ActionResult Update(int id, Location location)
         {
+            GetApplicationCookie();
+
             string url = "locationdata/updatelocation/" + id;
 
             string jsonpayload = jss.Serialize(location);
@@ -142,9 +179,10 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Location/Delete/5
+        [Authorize]
         public ActionResult DeleteConfirm(int id)
         {
-            string url = "locationdata/deletelocation/" + id;
+            string url = "locationdata/findlocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             LocationDto selectedlocation = response.Content.ReadAsAsync<LocationDto>().Result;
             return View(selectedlocation);
@@ -152,8 +190,11 @@ namespace LibraryCMS.Controllers
 
         // POST: Location/Delete/5
         [HttpPost]
+        [Authorize]
         public ActionResult Delete(int id)
         {
+            GetApplicationCookie();
+
             string url = "locationdata/deletelocation/" + id;
 
             HttpContent content = new StringContent("");

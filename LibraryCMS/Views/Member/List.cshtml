@@ -4,7 +4,9 @@
 }
 
 <a href="/Member/New">Add new member</a>
-<h2>List</h2>
+<h2>Member List</h2>
+<div>@Model.Count() Member(s) Registered</div>
+
 @foreach(var member in Model)
 {
     <h2><a href="/Member/Details/@member.MemberId">@member.FirstName @member.LastName</a></h2>

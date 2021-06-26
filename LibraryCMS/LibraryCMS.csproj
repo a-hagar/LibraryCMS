@@ -224,6 +224,10 @@
     <Compile Include="Migrations\202106242040144_updated.Designer.cs">
       <DependentUpon>202106242040144_updated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106252328045_images.cs" />
+    <Compile Include="Migrations\202106252328045_images.Designer.cs">
+      <DependentUpon>202106252328045_images.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Book.cs" />
@@ -317,6 +321,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Images\Book\" />
+    <Folder Include="Content\Images\Location\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -355,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106242040144_updated.resx">
       <DependentUpon>202106242040144_updated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106252328045_images.resx">
+      <DependentUpon>202106252328045_images.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

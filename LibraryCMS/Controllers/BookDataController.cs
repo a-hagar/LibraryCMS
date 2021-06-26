@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Web;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -66,6 +68,90 @@ namespace LibraryCMS.Controllers
             return Ok(BookDtos);
         }
 
+        // GET: api/BookData/ListBooksNotInLocations/1
+        [HttpGet]
+        [ResponseType(typeof(BookDto))]
+        [Authorize]
+        public IHttpActionResult ListBooksNotInLocations(int id)
+        {
+            //locations that have books that match the selected id
+            List<Book> Books = db.Books.Where(
+                b => !b.Location.Any(
+                l => l.LocationId == id)
+            ).ToList();
+            List<BookDto> BookDtos = new List<BookDto>();
+
+            Books.ForEach(b => BookDtos.Add(new BookDto()
+            {
+                BookId = b.BookId,
+                BookTitle = b.BookTitle,
+                AuthorFname = b.AuthorFname,
+                AuthorLname = b.AuthorLname,
+                genre = b.genre,
+                ISBN = b.ISBN,
+                Publisher = b.Publisher,
+                PublicationDate = b.PublicationDate
+            }));
+
+            return Ok(BookDtos);
+        }
+
+        /// <summary>
+        /// Associate the selected location with a specific book
+        /// </summary>
+        /// <param name="bookid"></param>
+        /// <param name="locationid"></param>
+        /// <returns>
+        /// 200 (OK) or 400 (NOT FOUND)
+        /// </returns>
+        [HttpPost]
+        [Route("api/bookdata/AssociateBookWithLocation/{bookid}/{locationid}")]
+        [Authorize]
+        public IHttpActionResult AssociateBookWithLocation(int bookid, int locationid)
+        {
+            Book SelectedBook = db.Books.Include(b=>b.Location).Where(b=>b.BookId == bookid).FirstOrDefault();
+            Location SelectedLocation = db.Locations.Find(locationid);
+
+            if(SelectedBook==null || SelectedLocation == null)
+            {
+                return NotFound();
+            }
+
+            SelectedBook.Location.Add(SelectedLocation);
+            db.SaveChanges();
+
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Unassociate the selected location with a specific book
+        /// </summary>
+        /// <param name="bookid"></param>
+        /// <param name="locationid"></param>
+        /// <returns>
+        /// 200 (OK) or 400 (NOT FOUND)
+        /// </returns>
+        [HttpPost]
+        [Route("api/bookdata/UnAssociateBookWithLocation/{bookid}/{locationid}")]
+        [Authorize]
+        public IHttpActionResult UnAssociateBookWithLocation(int bookid, int locationid)
+        {
+            Book SelectedBook = db.Books.Include(b => b.Location).Where(b => b.BookId == bookid).FirstOrDefault();
+            Location SelectedLocation = db.Locations.Find(locationid);
+
+            if (SelectedBook == null || SelectedLocation == null)
+            {
+                return NotFound();
+            }
+
+            SelectedBook.Location.Remove(SelectedLocation);
+            db.SaveChanges();
+
+
+            return Ok();
+        }
+
         // GET: api/BookData/FindBook/5
         [ResponseType(typeof(Book))]
         [HttpGet]
@@ -93,6 +179,7 @@ namespace LibraryCMS.Controllers
         // PUT: api/BookData/UpdateBook/5
         [ResponseType(typeof(void))]
         [HttpPost]
+        [Authorize]
         public IHttpActionResult UpdateBook(int id, Book book)
         {
             Debug.WriteLine("Updating Book!");
@@ -129,43 +216,79 @@ namespace LibraryCMS.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        /*
+
         [HttpPost]
-        //public IHttpActionResult UpdateBookPic(int id)
+        public IHttpActionResult UploadBookPic(int id)
         {
-            
             bool haspic = false;
             string picextension;
             if (Request.Content.IsMimeMultipartContent())
             {
-                debug.WriteLine("Testing file upload...");
+                Debug.WriteLine("Received multipart form data.");
+
                 int numfiles = HttpContext.Current.Request.Files.Count;
                 Debug.WriteLine("Files Received: " + numfiles);
 
-            if(numfiles == 1 && HttpContext.Current.Request.Files[0] != null)
+
+                if (numfiles == 1 && HttpContext.Current.Request.Files[0] != null)
                 {
                     var bookPic = HttpContext.Current.Request.Files[0];
-                    if (animalPic.ContentLength > 0)
+
+                    if (bookPic.ContentLength > 0)
                     {
-                        var valtypes = new[] {"jpeg", "jpg", "png", "gif"};  
+ 
+                        var valtypes = new[] { "jpeg", "jpg", "png", "gif" };
                         var extension = Path.GetExtension(bookPic.FileName).Substring(1);
+
+                        if (valtypes.Contains(extension))
+                        {
+                            try
+                            {
+
+                                string fn = id + "." + extension;
+                                string path = Path.Combine(HttpContext.Current.Server.MapPath("~/Content/Images/Book/"), fn);
+
+                                bookPic.SaveAs(path);
+
+
+                                haspic = true;
+                                picextension = extension;
+
+
+                                Book selectedbook = db.Books.Find(id);
+                                selectedbook.BookHasPic = haspic;
+                                selectedbook.PicExtension = extension;
+                                db.Entry(selectedbook).State = EntityState.Modified;
+
+                                db.SaveChanges();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Image was not saved successfully.");
+                                Debug.WriteLine("Exception:" + ex);
+                                return BadRequest();
+                            }
+                        }
                     }
+
                 }
 
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
 
             }
 
-                
-
-             
-
-           return id;
         }
-        */
+
 
         // POST: api/BookData/AddBook
         [ResponseType(typeof(Book))]
         [HttpPost]
+        [Authorize]
         public IHttpActionResult AddBook(Book book)
         {
             if (!ModelState.IsValid)
@@ -182,6 +305,7 @@ namespace LibraryCMS.Controllers
         // DELETE: api/BookData/DeleteBook/5
         [ResponseType(typeof(Book))]
         [HttpPost]
+        [Authorize]
         public IHttpActionResult DeleteBook(int id)
         {
             Book book = db.Books.Find(id);

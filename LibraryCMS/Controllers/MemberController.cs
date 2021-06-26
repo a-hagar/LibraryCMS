@@ -18,8 +18,30 @@ namespace LibraryCMS.Controllers
 
         static MemberController()
         {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                UseCookies = false
+            };
+
             client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:44329/api/");
+        }
+
+        private void GetApplicationCookie()
+        {
+            string token = "";
+            client.DefaultRequestHeaders.Remove("Cookie");
+            if (!User.Identity.IsAuthenticated) return;
+
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies.Get(".AspNet.ApplicationCookie");
+            if (cookie != null) token = cookie.Value;
+
+
+            if (token != "") client.DefaultRequestHeaders.Add("Cookie", ".AspNet.ApplicationCookie=" + token);
+            Debug.WriteLine("Token Submitted is : " + token);
+
+            return;
         }
 
         // GET: Member/List
@@ -28,7 +50,7 @@ namespace LibraryCMS.Controllers
             //retrieve list of members from member api
             //curl https://localhost:44329/api/memberdata/listmembers
 
-            string url = "memberdata/listmembers";
+            string url = "memberdata/listmembers/";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             Debug.WriteLine("The response code is " + response.StatusCode);
@@ -64,6 +86,7 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Create
+        [Authorize]
         public ActionResult New()
         {
             //get info from locations api to list all locations
@@ -77,8 +100,11 @@ namespace LibraryCMS.Controllers
 
         // POST: Member/Create
         [HttpPost]
+        [Authorize]
         public ActionResult Create(Member member)
         {
+            GetApplicationCookie();
+
             Debug.WriteLine("the new member is: " + member.FirstName + " " + member.LastName);
             string url = "memberdata/addmember";
 
@@ -103,6 +129,7 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             UpdateMember ViewModel = new UpdateMember();
@@ -125,6 +152,8 @@ namespace LibraryCMS.Controllers
         [HttpPost]
         public ActionResult Update(int id, Member member)
         {
+            GetApplicationCookie();
+
             string url = "memberdata/updatemember/" + id;
 
             string jsonpayload = jss.Serialize(member);
@@ -148,9 +177,10 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Delete/5
+        [Authorize]
         public ActionResult DeleteConfirm(int id)
         {
-            string url = "memberdata/findmember" + id ;
+            string url = "memberdata/findmember/" + id ;
             HttpResponseMessage response = client.GetAsync(url).Result;
             MemberDto selectedmember = response.Content.ReadAsAsync<MemberDto>().Result;
             return View(selectedmember);
@@ -158,8 +188,11 @@ namespace LibraryCMS.Controllers
 
         // POST: Member/Delete/5
         [HttpPost]
+        [Authorize]
         public ActionResult Delete(int id)
         {
+            GetApplicationCookie();
+
             string url = "memberdata/deletemember/" + id;
 
             HttpContent content = new StringContent("");

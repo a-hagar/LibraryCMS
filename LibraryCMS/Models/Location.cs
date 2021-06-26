@@ -16,6 +16,11 @@ namespace LibraryCMS.Models
         public string Address { get; set; }
         public string PostalCode{ get; set; }
 
+        //data for keeping track of image uploads
+        //images deposited into /Content/Images/Location/default.png
+        public bool LocationHasPic { get; set; }
+        public string PicExtension { get; set; }
+
         //a location can have many books
         public ICollection<Book> Book { get; set; }
 
@@ -27,5 +32,8 @@ namespace LibraryCMS.Models
         public string LocationName { get; set; }
         public string Address { get; set; }
         public string PostalCode { get; set; }
+
+        public bool LocationHasPic { get; set; }
+        public string PicExtension { get; set; }
     }
 }

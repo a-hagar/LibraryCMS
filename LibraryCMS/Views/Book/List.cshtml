@@ -3,8 +3,10 @@
     ViewBag.Title = "List";
 }
 
-<a href="/Book/Create">Add new Book</a>
-<h2>List</h2>
+<a href="/Book/New">Add new Book</a>
+<h2>Book List</h2>
+<div>@Model.Count() Books(s) Available</div>
+
 @foreach(var book in Model)
 {
     <h2><a href="/Book/Details/@book.BookId">@book.BookTitle</a></h2>

@@ -3,8 +3,10 @@
     ViewBag.Title = "List";
 }
 
-<a href="/Location/Create">Add new Location</a>
-<h2>List</h2>
+<a href="/Location/New">Add new Location</a>
+<h2>Location List</h2>
+<div>We have @Model.Count() Location(s) for you to visit</div>
+
 @foreach(var location in Model)
 {
     <h2><a href="/Location/Details/@location.LocationId">@location.LocationName</a></h2>

@@ -1,22 +1,25 @@
 ﻿@model LibraryCMS.Models.LocationDto
 @{
-    ViewBag.Title = "Update";
+    ViewBag.Title = "Edit";
 }
 
-<h2>Update Member</h2>
-<form action="/Location/Update/@Model.LocationId" method="POST">
+<h2>Update Location</h2>
+<form action="/Location/Update/@Model.LocationId" method="POST" enctype="multipart/form-data">
     <div style="display:none;">
         @* Passing through location id *@
         <input type="text" name="LocationId" value="@Model.LocationId" />
     </div>
     <div>
-        <label>First Name</label><input type="text" name="LocationName" value="@Model.LocationName" />
+        <label>Location Name</label><input type="text" name="LocationName" value="@Model.LocationName"/>
+    </div>
+    <div class="col-md-6 col-sm-12" style="float:right;">
+        <input type="file" name="LocationPic" />
     </div>
     <div>
-        <label>Last Name</label><input type="text" name="Address" value="@Model.Address" />
+        <label>Address</label><input type="text" name="Address" value="@Model.Address"/>
     </div>
     <div>
-        <label>Email</label><input type="email" name="PostalCode" value="@Model.PostalCode" />
+        <label>Postal Code</label><input type="text" name="PostalCode" value="@Model.PostalCode"/>
     </div>
     <div>
         <input type="submit" name="Update Location" />

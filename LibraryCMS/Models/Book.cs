@@ -21,7 +21,7 @@ namespace LibraryCMS.Models
         public DateTime PublicationDate { get; set; }
 
         //data for keeping track of image uploads
-        //images deposited into /Content/Images/Books/default.png
+        //images deposited into /Content/Images/Book/default.png
         public bool BookHasPic { get; set; }
         public string PicExtension { get; set; }
 
@@ -39,6 +39,9 @@ namespace LibraryCMS.Models
         public string ISBN { get; set; }
         public string Publisher { get; set; }
         public DateTime PublicationDate { get; set; }
+
+        public bool BookHasPic { get; set; }
+        public string PicExtension { get; set; }
     }
 
 

@@ -19,8 +19,30 @@ namespace LibraryCMS.Controllers
 
         static BookController()
         {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                UseCookies = false
+            };
+
             client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:44329/api/");
+        }
+
+        private void GetApplicationCookie()
+        {
+            string token = "";
+            client.DefaultRequestHeaders.Remove("Cookie");
+            if (!User.Identity.IsAuthenticated) return;
+
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies.Get(".AspNet.ApplicationCookie");
+            if (cookie != null) token = cookie.Value;
+
+
+            if (token != "") client.DefaultRequestHeaders.Add("Cookie", ".AspNet.ApplicationCookie=" + token);
+            Debug.WriteLine("Token Submitted is : " + token);
+
+            return;
         }
 
         // GET: Book/List
@@ -66,21 +88,63 @@ namespace LibraryCMS.Controllers
             IEnumerable<LocationDto> CurrentLocation = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
             ViewModel.CurrentLocation = CurrentLocation;
 
+            //list of locations that does not have the selected book
+            url = "locationdata/listlocationswithnobooks/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<LocationDto> OtherLocation = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+            ViewModel.OtherLocation = OtherLocation;
+
             return View(ViewModel);
         }
 
+        //POST: Book/Associate/{bookid}
+        [HttpPost]
+        [Authorize]
+        public ActionResult Associate(int id, int LocationId)
+        {
+            GetApplicationCookie();
+            Debug.WriteLine("Associating Book #" + id + " with Location #" + LocationId);
+
+            string url = "bookdata/associatebookwithlocation/" + id + "/" + LocationId;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            return RedirectToAction("Details/" + id);
+        }
+
+        //Get: Book/UnAssociate/{id}?LocationId={LocationId}
+        [HttpGet]
+        [Authorize]
+        public ActionResult UnAssociate(int id, int LocationId)
+        {
+            GetApplicationCookie();
+            Debug.WriteLine("Unassociating Book #" + id + " with Location #" + LocationId);
+
+            string url = "bookdata/unassociatebookwithlocation/" + id + "/" + LocationId;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            return RedirectToAction("Details/" + id);
+        }
+
         // GET: Book/Create
-        public ActionResult Create()
+        [Authorize]
+        public ActionResult New()
         {
             return View();
         }
 
         // POST: Book/Create
         [HttpPost]
+        [Authorize]
         public ActionResult Create(Book book)
         {
-            Debug.WriteLine("the new book is: " + book.BookTitle);
+            GetApplicationCookie();
+            
             string url = "bookdata/addbook";
+            Debug.WriteLine("the new book is: " + book.BookTitle);
 
             string jsonpayload = jss.Serialize(book);
 
@@ -102,46 +166,84 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Book/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
-            return View();
+            string url = "bookdata/findbook/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+
+            Debug.WriteLine("The response code is " + response.StatusCode);
+
+            BookDto selectedbook = response.Content.ReadAsAsync<BookDto>().Result;
+            return View(selectedbook);
         }
 
         // POST: Book/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [Authorize]
+        public ActionResult Update(int id, Book book)
         {
-            try
-            {
-                // TODO: Add update logic here
+            GetApplicationCookie();
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string url = "bookdata/updatebook/" + id;
+
+            string jsonpayload = jss.Serialize(book);
+            Debug.WriteLine(jsonpayload);
+
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
 
         // GET: Book/Delete/5
-        public ActionResult Delete(int id)
+        [Authorize]
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "bookdata/findbook/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+
+            Debug.WriteLine("The response code is " + response.StatusCode);
+
+            BookDto selectedbook = response.Content.ReadAsAsync<BookDto>().Result;
+
+            return View(selectedbook);
         }
 
         // POST: Book/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [Authorize]
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            GetApplicationCookie();
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string url = "bookdata/deletebook/"+id;
+
+            string jsonpayload = jss.Serialize("");
+
+            Debug.WriteLine(jsonpayload);
+
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
     }

@@ -2,24 +2,59 @@
 @{
     ViewBag.Title = "Details";
 }
-<a href="/Book/List">Go back</a>
-
-<h2>@Model.SelectedBook.BookTitle</h2>
-<div>By: @Model.SelectedBook.AuthorFname @Model.SelectedBook.AuthorLname</div>
-<div>Genre: @Model.SelectedBook.genre</div>
-<div>Publisher: @Model.SelectedBook.Publisher</div>
-<div>Publication Date: @Model.SelectedBook.PublicationDate</div>
-<div>ISBN: @Model.SelectedBook.ISBN</div>
-
-<div style="float:right;">
-    <h3>Currently at these Locations:</h3>
-    @foreach(var location in Model.CurrentLocation)
-    {
-        <div>
-            <a href="/Location/Details/@location.LocationId">@location.LocationName</a>
-        </div>
-    }
+<div style="font-size:15px; margin-top: 5px;">
+    <a href="/Book/List">⮌ Go back</a>
+    <a href="/Book/Edit/@Model.SelectedBook.BookId">✎ Update</a>
+    <a style="color:red;" href="/Book/DeleteConfirm/@Model.SelectedBook.BookId">🗑 Delete</a>
 </div>
+
+<div>
+    <h1 style="font-size:30px; font-weight:800; margin-top:40px">@Model.SelectedBook.BookTitle</h1>
+    <div style="font-size:20px; font-weight:600; margin-bottom:40px">By @Model.SelectedBook.AuthorFname @Model.SelectedBook.AuthorLname</div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12" style="float:right;">
+        @{
+            string imageurl = "/Content/Images/Book/default.png";
+            <div><img style="display:block; width:80%" src="@imageurl" /></div>
+        }
+    </div>
+
+    <div>
+        <div>Genre: @Model.SelectedBook.genre</div>
+        <div>Publisher: @Model.SelectedBook.Publisher</div>
+        <div>Publication Date: @Model.SelectedBook.PublicationDate</div>
+        <div>ISBN: @Model.SelectedBook.ISBN</div>
+    </div>
+
+    <div style>
+        <h3>Currently at these Locations:</h3>
+        @foreach (var location in Model.CurrentLocation)
+        {
+            <div>
+                <a href="/Location/Details/@location.LocationId">@location.LocationName </a><a style="color:red" href="/Book/Unassociate/@Model.SelectedBook.BookId?LocationId=@location.LocationId"> [X]</a>
+            </div>
+        }
+        <div>
+            <h3>Add new location for @Model.SelectedBook.BookTitle</h3>
+            <form method="POST" action="/Book/Associate/@Model.SelectedBook.BookId">
+                <select name="LocationId">
+                    @foreach (var location in Model.OtherLocation)
+                    {
+                        <option value="@location.LocationId">@location.LocationName</option>
+                    }
+                </select>
+                <input type="submit" value="Associate Location" />
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
+
+
 
 
 

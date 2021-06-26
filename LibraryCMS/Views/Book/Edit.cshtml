@@ -1,32 +1,45 @@
 ﻿@model LibraryCMS.Models.BookDto
 @{
-    ViewBag.Title = "Update";
+    ViewBag.Title = "Edit";
 }
+<a href="/Book/List">⮌ Go back</a><br />
 
-<h2>Update Member</h2>
-<form action="/Member/Update/@Model.BookId" method="POST">
+<h2>Update Book</h2>
+<form action="/Book/Update/@Model.BookId" method="POST" enctype="multipart/form-data">
     <div style="display:none;">
         @* Passing through book id *@
-        <input type="text" name="MemberId" value="@Model.BookId" />
+        <input type="text" name="BookId" value="@Model.BookId" />
     </div>
-    <div>
-        <label>First Name</label><input type="text" name="FirstName" value="@Model.AuthorFname" />
+    <div class="row">
+        <div>
+            <label>Book</label><input type="text" name="BookTitle" value="@Model.BookTitle" />
+        </div>
+        <div class="col-md-6 col-sm-12" style="float:right;">
+            <input type="file" name="BookPic" />
+        </div>
+        <div>
+            <label>Author's First Name</label><input type="text" name="AuthorFname" value="@Model.AuthorFname" />
+        </div>
+        <div>
+            <label>Author's Last Name</label><input type="text" name="AuthorLname" value="@Model.AuthorLname" />
+        </div>
+        <div>
+            <label>Genre</label><input type="text" name="genre" value="@Model.genre" />
+        </div>
+        <div>
+            <label>Publication Date</label><input type="date" name="PublicationDate" value="@Model.PublicationDate.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label>Publisher</label><input type="text" name="Publisher" value="@Model.Publisher" />
+        </div>
+        <div>
+            <label>ISBN</label><input type="text" name="ISBN" value="@Model.ISBN" />
+        </div>
+        <div>
+            <input type="submit" name="Update Book" />
+        </div>
     </div>
-    <div>
-        <label>Last Name</label><input type="text" name="LastName" value="@Model.BookTitle" />
-    </div>
-    <div>
-        <label>Email</label><input type="email" name="eMail" value="@Model.SelectedMember.eMail" />
-    </div>
-    <div>
-        <label>Registration Date</label><input type="date" name="RegistrationDate" value="@Model.SelectedMember.RegistrationDate" />
-    </div>
-    <div>
-        <label>Phone Number</label><input type="tel" name="PhoneNum" value="@Model.SelectedMember.PhoneNum" />
-    </div>
-    <div>
-        <input type="submit" name="Update Book" />
-    </div>
-</form>
+
+    </form>
 
 

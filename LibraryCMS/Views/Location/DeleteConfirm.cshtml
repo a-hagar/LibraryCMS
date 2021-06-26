@@ -3,7 +3,11 @@
     ViewBag.Title = "DeleteConfirm";
 }
 
-<h2>Are you sure you want to delete the location @Model.LocationName?</h2>
+<h2>Are you sure you want to delete @Model.LocationName?</h2>
 <div>
-    <input type="submit" name="Delete Location" />
+    <form method="POST" action="/Location/Delete/@Model.LocationId">
+        <input type="submit" name="🗑 Delete" value="Confirm Delete" />
+    </form>
+
+
 </div>

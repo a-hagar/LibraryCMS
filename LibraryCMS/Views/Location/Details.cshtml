@@ -2,30 +2,48 @@
 @{
     ViewBag.Title = "Details";
 }
-<div>
-    <a href="/Location/List">Go back</a>
-    <a href="/Location/Edit/@Model.SelectedLocation.LocationId">Update Location</a>
-    <a href="/Location/Delete/@Model.SelectedLocation.LocationId">Delete Location</a>
+<div style="font-size:15px; margin-top: 5px;">
+    <a href="/Location/List">⮌ Go back</a>
+    <a href="/Location/Edit/@Model.SelectedLocation.LocationId">✎ Update</a>
+    <a style="color:red;" href="/Location/DeleteConfirm/@Model.SelectedLocation.LocationId">🗑 Delete</a>
 </div>
 
 
-<h2>@Model.SelectedLocation.LocationName</h2>
-<div>Address: @Model.SelectedLocation.Address @Model.SelectedLocation.PostalCode</div>
-
 <div>
-    <h4>Members from this library</h4>
-    @foreach(var member in Model.RelatedMembers)
-    {
-        <div><a href="/Member/Details/@member.MemberId">@member.FirstName @member.LastName</a></div>
-    }
+    <h1 style="font-size:30px; font-weight:800; margin-top:40px">@Model.SelectedLocation.LocationName</h1>
+    <div style="font-size:20px; font-weight:600; margin-bottom:40px">Address: @Model.SelectedLocation.Address @Model.SelectedLocation.PostalCode</div>
 </div>
 
-<div>
-    <h4>Books available at this location</h4>
-    @foreach (var book in Model.BookSelection)
-    {
-        <div><a href="/Book/Details/@book.BookId">@book.BookTitle</a></div>
-    }
+
+<div class="row">
+
+    <div class="col-md-6 col-sm-12" style="float:right;">
+        @{
+            string imageurl = "/Content/Images/Location/default.png";
+            <div><img style="display:block; width:80%; margin-top:40px;" src="@imageurl" /></div>
+        }
+    </div>
+
+    <div style="padding-left:15px;">
+        <h4>Members from this library</h4>
+        @foreach (var member in Model.RelatedMembers)
+        {
+            <div><a href="/Member/Details/@member.MemberId">@member.FirstName @member.LastName</a></div>
+        }
+    </div>
+
+    <br />
+    
+    <div style="padding-left:15px;">
+        <h4>Books available at this location</h4>
+        @foreach (var book in Model.BookSelection)
+        {
+            <div><a href="/Book/Details/@book.BookId">@book.BookTitle</a></div>
+        }
+    </div>
+
 </div>
+
+
 
 
