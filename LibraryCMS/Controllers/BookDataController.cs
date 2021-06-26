@@ -34,7 +34,10 @@ namespace LibraryCMS.Controllers
                 genre = b.genre,
                 ISBN = b.ISBN,
                 Publisher = b.Publisher,
-                PublicationDate = b.PublicationDate
+                PublicationDate = b.PublicationDate,
+                BookHasPic = b.BookHasPic,
+                PicExtension = b.PicExtension
+
             }));
 
             return BookDtos;
@@ -62,7 +65,9 @@ namespace LibraryCMS.Controllers
                 genre = b.genre,
                 ISBN = b.ISBN,
                 Publisher = b.Publisher,
-                PublicationDate = b.PublicationDate
+                PublicationDate = b.PublicationDate,
+                BookHasPic = b.BookHasPic,
+                PicExtension = b.PicExtension
             }));
 
             return Ok(BookDtos);
@@ -71,7 +76,6 @@ namespace LibraryCMS.Controllers
         // GET: api/BookData/ListBooksNotInLocations/1
         [HttpGet]
         [ResponseType(typeof(BookDto))]
-        [Authorize]
         public IHttpActionResult ListBooksNotInLocations(int id)
         {
             //locations that have books that match the selected id
@@ -90,7 +94,7 @@ namespace LibraryCMS.Controllers
                 genre = b.genre,
                 ISBN = b.ISBN,
                 Publisher = b.Publisher,
-                PublicationDate = b.PublicationDate
+                PublicationDate = b.PublicationDate,
             }));
 
             return Ok(BookDtos);
@@ -99,14 +103,13 @@ namespace LibraryCMS.Controllers
         /// <summary>
         /// Associate the selected location with a specific book
         /// </summary>
-        /// <param name="bookid"></param>
-        /// <param name="locationid"></param>
+        /// <param name="bookid"> the id of the selected book</param>
+        /// <param name="locationid"> the id of the selected location</param>
         /// <returns>
         /// 200 (OK) or 400 (NOT FOUND)
         /// </returns>
         [HttpPost]
         [Route("api/bookdata/AssociateBookWithLocation/{bookid}/{locationid}")]
-        [Authorize]
         public IHttpActionResult AssociateBookWithLocation(int bookid, int locationid)
         {
             Book SelectedBook = db.Books.Include(b=>b.Location).Where(b=>b.BookId == bookid).FirstOrDefault();
@@ -120,6 +123,7 @@ namespace LibraryCMS.Controllers
             SelectedBook.Location.Add(SelectedLocation);
             db.SaveChanges();
 
+            Debug.WriteLine("Association Complete!");
 
             return Ok();
         }
@@ -134,7 +138,6 @@ namespace LibraryCMS.Controllers
         /// </returns>
         [HttpPost]
         [Route("api/bookdata/UnAssociateBookWithLocation/{bookid}/{locationid}")]
-        [Authorize]
         public IHttpActionResult UnAssociateBookWithLocation(int bookid, int locationid)
         {
             Book SelectedBook = db.Books.Include(b => b.Location).Where(b => b.BookId == bookid).FirstOrDefault();
@@ -166,7 +169,9 @@ namespace LibraryCMS.Controllers
                 AuthorLname = book.AuthorLname,
                 genre = book.genre,
                 Publisher = book.Publisher,
-                PublicationDate = book.PublicationDate
+                PublicationDate = book.PublicationDate,
+                BookHasPic = book.BookHasPic,
+                PicExtension = book.PicExtension
             };
             if (book == null)
             {
@@ -175,48 +180,6 @@ namespace LibraryCMS.Controllers
 
             return Ok(book);
         }
-
-        // PUT: api/BookData/UpdateBook/5
-        [ResponseType(typeof(void))]
-        [HttpPost]
-        [Authorize]
-        public IHttpActionResult UpdateBook(int id, Book book)
-        {
-            Debug.WriteLine("Updating Book!");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != book.BookId)
-            {
-                Debug.WriteLine("The book id is " + id);
-                Debug.WriteLine("The other book id is " + book.BookId);
-                return BadRequest();
-            }
-
-            db.Entry(book).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
         [HttpPost]
         public IHttpActionResult UploadBookPic(int id)
         {
@@ -236,7 +199,7 @@ namespace LibraryCMS.Controllers
 
                     if (bookPic.ContentLength > 0)
                     {
- 
+
                         var valtypes = new[] { "jpeg", "jpg", "png", "gif" };
                         var extension = Path.GetExtension(bookPic.FileName).Substring(1);
 
@@ -284,11 +247,50 @@ namespace LibraryCMS.Controllers
 
         }
 
+        // PUT: api/BookData/UpdateBook/5
+        [ResponseType(typeof(void))]
+        [HttpPost]
+        public IHttpActionResult UpdateBook(int id, Book book)
+        {
+            Debug.WriteLine("Updating Book!");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != book.BookId)
+            {
+                Debug.WriteLine("The book id is " + id);
+                Debug.WriteLine("The other book id is " + book.BookId);
+                return BadRequest();
+            }
+
+            db.Entry(book).State = EntityState.Modified;
+            db.Entry(book).Property(b => b.BookHasPic).IsModified = false;
+            db.Entry(book).Property(b => b.PicExtension).IsModified = false;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
 
         // POST: api/BookData/AddBook
         [ResponseType(typeof(Book))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult AddBook(Book book)
         {
             if (!ModelState.IsValid)
@@ -305,13 +307,24 @@ namespace LibraryCMS.Controllers
         // DELETE: api/BookData/DeleteBook/5
         [ResponseType(typeof(Book))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult DeleteBook(int id)
         {
+        
             Book book = db.Books.Find(id);
             if (book == null)
             {
                 return NotFound();
+            }
+
+            if (book.BookHasPic && book.PicExtension != "")
+            {
+
+                string path = HttpContext.Current.Server.MapPath("~/Content/Images/Book/" + id + "." + book.PicExtension);
+                if (System.IO.File.Exists(path))
+                {
+                    Debug.WriteLine("Deleting files...");
+                    System.IO.File.Delete(path);
+                }
             }
 
             db.Books.Remove(book);

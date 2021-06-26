@@ -2,18 +2,30 @@
 @{
     ViewBag.Title = "New";
 }
+<style>
+    .form-section {
+        display: flex;
+        margin-bottom: 1em;
+        flex-direction: column;
+        margin: 2em 0 1em;
+    }
+</style>
+
 <a href="/Location/List">⮌ Go back</a><br />
 
 <h2>Create New Location</h2>
 <form action="/Location/Create" method="POST">
-    <div>
-        <label>Location Name</label><input type="text" name="LocationName" />
+    <div class="form-section">
+        <label >Location Name </label><input type="text" name="LocationName" />
     </div>
-    <div>
-        <label>Address</label><input type="text" name="Address" />
+    <div class="col-md-6 col-sm-12" style="float:right;">
+        <input type="file" name="LocationPic" />
     </div>
-    <div>
-        <label>Postal Code</label><input type="text" name="PostalCode" />
+    <div class="form-section">
+        <label>Address </label><input type="text" name="Address" />
+    </div>
+    <div class="form-section">
+        <label>Postal Code </label><input type="text" name="PostalCode" />
     </div>
     <div>
         <input type="submit" name="Add Location" />

@@ -153,7 +153,7 @@ namespace LibraryCMS.Controllers
         // POST: Location/Edit/5
         [HttpPost]
         [Authorize]
-        public ActionResult Update(int id, Location location)
+        public ActionResult Update(int id, Location location, HttpPostedFileBase LocationPic)
         {
             GetApplicationCookie();
 
@@ -168,7 +168,19 @@ namespace LibraryCMS.Controllers
             HttpResponseMessage response = client.PostAsync(url, content).Result;
             Debug.WriteLine(content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && LocationPic != null)
+            {
+                url = "locationdata/uploadlocationpic/" + id;
+
+                MultipartFormDataContent requestcontent = new MultipartFormDataContent();
+                HttpContent imagecontent = new StreamContent(LocationPic.InputStream);
+                requestcontent.Add(imagecontent, "BookPic", LocationPic.FileName);
+
+                response = client.PostAsync(url, requestcontent).Result;
+
+                return RedirectToAction("List");
+            }
+            else if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("List");
             }

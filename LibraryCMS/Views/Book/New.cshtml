@@ -2,34 +2,43 @@
 @{
     ViewBag.Title = "New";
 }
+<style>
+    .form-section {
+        display: flex;
+        margin-bottom: 1em;
+        flex-direction: column;
+        margin: 2em 0 1em;
+    }
+</style>
+
 <a href="/Book/List">⮌ Go back</a><br />
 
 <h2>Add New Book</h2>
 <form action="/Book/Create" method="POST" enctype="multipart/form-data">
     <!--whenever doing any kind of file upload, make sure your form element has an attribute of enctype="multipart/form-data"-->
-    <div>
-        <label>Book</label><input type="text" name="BookTitle" />
+    <div class="form-section">
+        <label>Book Title </label><input type="text" name="BookTitle" />
     </div>
-    <div>
-        <label>Author's First Name</label><input type="text" name="AuthorFname" />
+    <div class="col-md-6 col-sm-12" style="float:right;">
+        <input type="file" name="BookPic" />
     </div>
-    <div>
-        <label>Author's Last Name</label><input type="text" name="AuthorLname" />
+    <div class="form-section">
+        <label>Author's First Name </label><input type="text" name="AuthorFname" />
     </div>
-    <div>
+    <div class="form-section">
+        <label>Author's Last Name </label><input type="text" name="AuthorLname" />
+    </div>
+    <div class="form-section">
         <label>Genre</label><input type="text" name="genre" />
     </div>
-    <div>
-        <label>Publication Date</label><input type="date" name="PublicationDate" />
+    <div class="form-section">
+        <label>Publication Date </label><input type="date" name="PublicationDate" />
     </div>
-    <div>
-        <label>Publisher</label><input type="text" name="Publisher" />
+    <div class="form-section">
+        <label>Publisher </label><input type="text" name="Publisher" />
     </div>
-    <div>
-        <label>ISBN</label><input type="text" name="ISBN" />
-    </div>
-    <div class="col-md-6 col-sm-12">
-        <input type="file" name="BookPic" />
+    <div class="form-section">
+        <label>ISBN </label><input type="text" name="ISBN" />
     </div>
     <div>
         <input type="submit" name="Add Location" />

@@ -99,10 +99,10 @@ namespace LibraryCMS.Controllers
 
         //POST: Book/Associate/{bookid}
         [HttpPost]
-        [Authorize]
         public ActionResult Associate(int id, int LocationId)
         {
             GetApplicationCookie();
+
             Debug.WriteLine("Associating Book #" + id + " with Location #" + LocationId);
 
             string url = "bookdata/associatebookwithlocation/" + id + "/" + LocationId;
@@ -115,10 +115,9 @@ namespace LibraryCMS.Controllers
 
         //Get: Book/UnAssociate/{id}?LocationId={LocationId}
         [HttpGet]
-        [Authorize]
         public ActionResult UnAssociate(int id, int LocationId)
         {
-            GetApplicationCookie();
+
             Debug.WriteLine("Unassociating Book #" + id + " with Location #" + LocationId);
 
             string url = "bookdata/unassociatebookwithlocation/" + id + "/" + LocationId;
@@ -138,10 +137,10 @@ namespace LibraryCMS.Controllers
 
         // POST: Book/Create
         [HttpPost]
-        [Authorize]
+
         public ActionResult Create(Book book)
         {
-            GetApplicationCookie();
+
             
             string url = "bookdata/addbook";
             Debug.WriteLine("the new book is: " + book.BookTitle);
@@ -180,10 +179,9 @@ namespace LibraryCMS.Controllers
 
         // POST: Book/Edit/5
         [HttpPost]
-        [Authorize]
-        public ActionResult Update(int id, Book book)
+
+        public ActionResult Update(int id, Book book, HttpPostedFileBase BookPic)
         {
-            GetApplicationCookie();
 
             string url = "bookdata/updatebook/" + id;
 
@@ -196,7 +194,19 @@ namespace LibraryCMS.Controllers
             HttpResponseMessage response = client.PostAsync(url, content).Result;
             Debug.WriteLine(content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && BookPic !=null)
+            {
+                url = "bookdata/uploadbookpic/" + id;
+
+                MultipartFormDataContent requestcontent = new MultipartFormDataContent();
+                HttpContent imagecontent = new StreamContent(BookPic.InputStream);
+                requestcontent.Add(imagecontent, "BookPic", BookPic.FileName);
+
+                response = client.PostAsync(url, requestcontent).Result;
+
+                return RedirectToAction("Details/" + id);
+            }
+            else if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("List");
             }
@@ -225,7 +235,6 @@ namespace LibraryCMS.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            GetApplicationCookie();
 
             string url = "bookdata/deletebook/"+id;
 

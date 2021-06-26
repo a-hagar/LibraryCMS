@@ -2,37 +2,54 @@
 @{
     ViewBag.Title = "Edit";
 }
-<a href="/Book/List">⮌ Go back</a><br />
+<style>
+    .form-section {
+        display: flex;
+        margin-bottom: 1em;
+        flex-direction: column;
+        margin: 2em 0 1em;
+    }
+
+    @@media screen and (max-width: 995px) {
+        #img {
+            float: none;
+        }
+
+    }
+</style>
+
+<a href="/Book/Details/@Model.BookId">⮌ Go back</a>
 
 <h2>Update Book</h2>
+
 <form action="/Book/Update/@Model.BookId" method="POST" enctype="multipart/form-data">
     <div style="display:none;">
         @* Passing through book id *@
         <input type="text" name="BookId" value="@Model.BookId" />
     </div>
     <div class="row">
-        <div>
+        <div class="form-section">
             <label>Book</label><input type="text" name="BookTitle" value="@Model.BookTitle" />
         </div>
-        <div class="col-md-6 col-sm-12" style="float:right;">
+        <div id="img" class="form-section" style="float:right;">
             <input type="file" name="BookPic" />
         </div>
-        <div>
+        <div class="form-section">
             <label>Author's First Name</label><input type="text" name="AuthorFname" value="@Model.AuthorFname" />
         </div>
-        <div>
+        <div class="form-section">
             <label>Author's Last Name</label><input type="text" name="AuthorLname" value="@Model.AuthorLname" />
         </div>
-        <div>
+        <div class="form-section">
             <label>Genre</label><input type="text" name="genre" value="@Model.genre" />
         </div>
-        <div>
+        <div class="form-section">
             <label>Publication Date</label><input type="date" name="PublicationDate" value="@Model.PublicationDate.ToString("yyyy-MM-dd")" />
         </div>
-        <div>
+        <div class="form-section">
             <label>Publisher</label><input type="text" name="Publisher" value="@Model.Publisher" />
         </div>
-        <div>
+        <div class="form-section">
             <label>ISBN</label><input type="text" name="ISBN" value="@Model.ISBN" />
         </div>
         <div>
@@ -40,6 +57,6 @@
         </div>
     </div>
 
-    </form>
+</form>
 
 

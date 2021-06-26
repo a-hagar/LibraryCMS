@@ -32,6 +32,8 @@ namespace LibraryCMS.Controllers
                 LocationName = l.LocationName,
                 Address = l.Address,
                 PostalCode = l.PostalCode,
+                LocationHasPic = l.LocationHasPic,
+                PicExtension = l.PicExtension
             }));
 
             return Ok(LocationDtos);
@@ -79,7 +81,9 @@ namespace LibraryCMS.Controllers
                 LocationId = l.LocationId,
                 LocationName = l.LocationName,
                 Address = l.Address,
-                PostalCode = l.PostalCode
+                PostalCode = l.PostalCode,
+                LocationHasPic = l.LocationHasPic,
+                PicExtension = l.PicExtension
             }));
 
             return Ok(LocationDtos);
@@ -98,6 +102,8 @@ namespace LibraryCMS.Controllers
                 LocationName = location.LocationName,
                 Address = location.Address,
                 PostalCode = location.PostalCode,
+                LocationHasPic = location.LocationHasPic,
+                PicExtension = location.PicExtension
             };
             if (location == null)
             {
@@ -105,48 +111,6 @@ namespace LibraryCMS.Controllers
             }
 
             return Ok(LocationDto);
-        }
-
-
-
-        // PUT: api/LocationsData/UpdateLocation/5
-        [ResponseType(typeof(void))]
-        [HttpPost]
-        [Authorize]
-        public IHttpActionResult UpdateLocation(int id, Location location)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != location.LocationId)
-            {
-                Debug.WriteLine("The location id is " + id);
-                Debug.WriteLine("The other location id is " + location.LocationId);
-                return BadRequest();
-            }
-
-            db.Entry(location).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-;
-            Debug.WriteLine("There are no errors");
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         [HttpPost]
@@ -178,7 +142,7 @@ namespace LibraryCMS.Controllers
                             {
 
                                 string fn = id + "." + extension;
-                                string path = Path.Combine(HttpContext.Current.Server.MapPath("~/Content/Images/Book/"), fn);
+                                string path = Path.Combine(HttpContext.Current.Server.MapPath("~/Content/Images/Location/"), fn);
 
                                 locationPic.SaveAs(path);
 
@@ -216,10 +180,51 @@ namespace LibraryCMS.Controllers
 
         }
 
+
+        // PUT: api/LocationsData/UpdateLocation/5
+        [ResponseType(typeof(void))]
+        [HttpPost]
+        public IHttpActionResult UpdateLocation(int id, Location location)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != location.LocationId)
+            {
+                Debug.WriteLine("The location id is " + id);
+                Debug.WriteLine("The other location id is " + location.LocationId);
+                return BadRequest();
+            }
+
+            db.Entry(location).State = EntityState.Modified;
+            db.Entry(location).Property(l => l.LocationHasPic).IsModified = false;
+            db.Entry(location).Property(l => l.PicExtension).IsModified = false;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+;
+            Debug.WriteLine("There are no errors");
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
         // POST: api/LocationsData/AddLocation
         [ResponseType(typeof(Location))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult AddLocation(Location location)
         {
             if (!ModelState.IsValid)
@@ -236,13 +241,24 @@ namespace LibraryCMS.Controllers
         // DELETE: api/LocationsData/DeleteLocation/5
         [ResponseType(typeof(Location))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult DeleteLocation(int id)
         {
             Location location = db.Locations.Find(id);
             if (location == null)
             {
                 return NotFound();
+            }
+
+
+            if (location.LocationHasPic && location.PicExtension != "")
+            {
+
+                string path = HttpContext.Current.Server.MapPath("~/Content/Images/Location/" + id + "." + location.PicExtension);
+                if (System.IO.File.Exists(path))
+                {
+                    Debug.WriteLine("Deleting files...");
+                    System.IO.File.Delete(path);
+                }
             }
 
             db.Locations.Remove(location);

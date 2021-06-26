@@ -93,7 +93,6 @@ namespace LibraryCMS.Controllers
         // POST: api/MemberData/UpdateMember/5
         [ResponseType(typeof(void))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult UpdateMember(int id, Member member)
         {
             Debug.WriteLine("Updating Animal!");
@@ -134,7 +133,6 @@ namespace LibraryCMS.Controllers
         // POST: api/MemberData/AddMember
         [ResponseType(typeof(Member))]
         [HttpPost]        
-        [Authorize]
         public IHttpActionResult AddMember(Member member)
         {
             if (!ModelState.IsValid)
@@ -151,7 +149,6 @@ namespace LibraryCMS.Controllers
         // POST: api/MemberData/DeleteMember/5
         [ResponseType(typeof(Member))]
         [HttpPost]
-        [Authorize]
         public IHttpActionResult DeleteMember(int id)
         {
             Member member = db.Members.Find(id);

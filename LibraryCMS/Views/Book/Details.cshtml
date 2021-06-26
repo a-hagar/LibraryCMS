@@ -8,17 +8,23 @@
     <a style="color:red;" href="/Book/DeleteConfirm/@Model.SelectedBook.BookId">🗑 Delete</a>
 </div>
 
-<div>
-    <h1 style="font-size:30px; font-weight:800; margin-top:40px">@Model.SelectedBook.BookTitle</h1>
-    <div style="font-size:20px; font-weight:600; margin-bottom:40px">By @Model.SelectedBook.AuthorFname @Model.SelectedBook.AuthorLname</div>
-</div>
 
 <div class="row">
-    <div class="col-md-6 col-sm-12" style="float:right;">
+    <div class="col-md-6 col-sm-12" style="float:right; margin-top:50px;">
         @{
             string imageurl = "/Content/Images/Book/default.png";
-            <div><img style="display:block; width:80%" src="@imageurl" /></div>
+            if (Model.SelectedBook.BookHasPic)
+            {
+                imageurl = "/Content/Images/Book/" + Model.SelectedBook.BookId + "." + Model.SelectedBook.PicExtension;
+            }
+
         }
+        <div><img style="display:block; width:50%" src="@imageurl" /></div>
+    </div>
+
+    <div>
+        <h1 style="font-size:30px; font-weight:800; margin-top:40px">@Model.SelectedBook.BookTitle</h1>
+        <div style="font-size:20px; font-weight:600; margin-bottom:40px">By @Model.SelectedBook.AuthorFname @Model.SelectedBook.AuthorLname</div>
     </div>
 
     <div>

@@ -2,6 +2,16 @@
 @{
     ViewBag.Title = "Edit";
 }
+<style>
+    .form-section {
+        display: flex;
+        margin-bottom: 1em;
+        flex-direction: column;
+        margin: 2em 0 1em;
+    }
+</style>
+
+<a href="/Location/Details/@Model.LocationId">⮌ Go back</a>
 
 <h2>Update Location</h2>
 <form action="/Location/Update/@Model.LocationId" method="POST" enctype="multipart/form-data">
@@ -9,17 +19,17 @@
         @* Passing through location id *@
         <input type="text" name="LocationId" value="@Model.LocationId" />
     </div>
-    <div>
-        <label>Location Name</label><input type="text" name="LocationName" value="@Model.LocationName"/>
+    <div class="form-section">
+        <label>Location Name </label><input type="text" name="LocationName" value="@Model.LocationName" />
     </div>
     <div class="col-md-6 col-sm-12" style="float:right;">
         <input type="file" name="LocationPic" />
     </div>
-    <div>
-        <label>Address</label><input type="text" name="Address" value="@Model.Address"/>
+    <div class="form-section">
+        <label>Address </label><input type="text" name="Address" value="@Model.Address" />
     </div>
-    <div>
-        <label>Postal Code</label><input type="text" name="PostalCode" value="@Model.PostalCode"/>
+    <div class="form-section">
+        <label>Postal Code </label><input type="text" name="PostalCode" value="@Model.PostalCode" />
     </div>
     <div>
         <input type="submit" name="Update Location" />

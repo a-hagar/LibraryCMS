@@ -2,6 +2,16 @@
 @{
     ViewBag.Title = "Edit";
 }
+<style>
+    .form-section {
+        display: flex;
+        margin-bottom: 1em;
+        flex-direction: column;
+        margin: 2em 0 1em;
+    }
+</style>
+
+<a href="/Member/Details/@Model.SelectedMember.MemberId">⮌ Go back</a>
 
 <h2>Update Member</h2>
 <form action="/Member/Update/@Model.SelectedMember.MemberId" method="POST">
@@ -10,27 +20,27 @@
         <input type="text" name="MemberId" value="@Model.SelectedMember.MemberId" />
     </div>
     <div class="form-section">
-        <label>First Name</label><input type="text" name="FirstName" value="@Model.SelectedMember.FirstName" />
+        <label>First Name </label><input type="text" name="FirstName" value="@Model.SelectedMember.FirstName" />
     </div>
     <div class="form-section">
-        <label>Last Name</label><input type="text" name="LastName" value="@Model.SelectedMember.LastName" />
+        <label>Last Name </label><input type="text" name="LastName" value="@Model.SelectedMember.LastName" />
     </div>
     <div class="form-section">
-        <label>Email</label><input type="email" name="eMail" value="@Model.SelectedMember.eMail" />
-    </div>
-    <div>
-        <label>Registration Date</label><input type="date" name="RegistrationDate" value="@Model.SelectedMember.RegistrationDate.ToString("yyyy-MM-dd")" />
+        <label>Email </label><input type="email" name="eMail" value="@Model.SelectedMember.eMail" />
     </div>
     <div class="form-section">
-        <label>Phone Number</label><input type="tel" name="PhoneNum" value="@Model.SelectedMember.PhoneNum" />
+        <label>Registration Date </label><input type="date" name="RegistrationDate" value="@Model.SelectedMember.RegistrationDate.ToString("yyyy-MM-dd")" />
     </div>
     <div class="form-section">
-        <label>Preferred Location</label>
+        <label>Phone Number </label><input type="tel" name="PhoneNum" value="@Model.SelectedMember.PhoneNum" />
+    </div>
+    <div class="form-section">
+        <label>Preferred Location </label>
         <select name="LocationId">
             @foreach (var locations in Model.LocationsOptions)
             {
                 <option value="@locations.LocationId">@locations.LocationName</option>
-                if(locations.LocationId == Model.SelectedMember.LocationId)
+                if (locations.LocationId == Model.SelectedMember.LocationId)
                 {
                     <option value="@Model.SelectedMember.LocationId" selected>@Model.SelectedMember.LocationName</option>
                 }

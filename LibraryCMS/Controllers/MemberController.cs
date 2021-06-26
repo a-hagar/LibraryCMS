@@ -86,7 +86,6 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Create
-        [Authorize]
         public ActionResult New()
         {
             //get info from locations api to list all locations
@@ -100,10 +99,9 @@ namespace LibraryCMS.Controllers
 
         // POST: Member/Create
         [HttpPost]
-        [Authorize]
+
         public ActionResult Create(Member member)
         {
-            GetApplicationCookie();
 
             Debug.WriteLine("the new member is: " + member.FirstName + " " + member.LastName);
             string url = "memberdata/addmember";
@@ -129,7 +127,6 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Edit/5
-        [Authorize]
         public ActionResult Edit(int id)
         {
             UpdateMember ViewModel = new UpdateMember();
@@ -152,7 +149,6 @@ namespace LibraryCMS.Controllers
         [HttpPost]
         public ActionResult Update(int id, Member member)
         {
-            GetApplicationCookie();
 
             string url = "memberdata/updatemember/" + id;
 
@@ -177,7 +173,6 @@ namespace LibraryCMS.Controllers
         }
 
         // GET: Member/Delete/5
-        [Authorize]
         public ActionResult DeleteConfirm(int id)
         {
             string url = "memberdata/findmember/" + id ;
@@ -188,10 +183,8 @@ namespace LibraryCMS.Controllers
 
         // POST: Member/Delete/5
         [HttpPost]
-        [Authorize]
         public ActionResult Delete(int id)
         {
-            GetApplicationCookie();
 
             string url = "memberdata/deletemember/" + id;
 
