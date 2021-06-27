@@ -1,6 +1,6 @@
 # LibraryCMS
-<div style="text-align:center"><img style="width: 20%" src="https://raw.githubusercontent.com/a-hagar/LibraryCMS/master/home-screen.PNG" /></div>
-<br />
+
+
 A library content management system built with ASP.NET. The CMS connects to a database with information such as:
    * Library Members and their contact information and preferred location
    * Books that are located in the library and the location
