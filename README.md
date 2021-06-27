@@ -10,6 +10,11 @@ A library content management system built with ASP.NET. The CMS connects to a da
    * Library Locations across Ontario with a list of members registered and the books available at the location
    * Authorization for admins to edit, add, or delete any information for visitors to view
 
+##Current Features
+- [x] Basic CRUD for members, locations, and books
+- [x] Using association to view a location's available books and registered members
+- [x] Image uploading for books and locations 
+
 ##Issues to Fix
 - [x] Image upload
 - [ ] Authentication for APIs
