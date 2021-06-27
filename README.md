@@ -17,7 +17,7 @@ A library content management system built with ASP.NET. The CMS connects to a da
 
 ## Issues to Fix
 - [x] Image upload
-- [ ] Authentication for APIs
+- [ ] Authentication on API level
 
 ## Potential New Features
 - [ ] Search Feature for Books & Locations
