@@ -18,3 +18,4 @@ A library content management system built with ASP.NET. The CMS connects to a da
 - [ ] Search Feature for Books & Locations
 - [ ] Reservation system for users
 - [ ] Expand database to include triggers & log tables to track user history
+- [ ] Redesign (with or without Bootstrap)
